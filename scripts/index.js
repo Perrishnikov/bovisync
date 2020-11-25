@@ -1,3 +1,4 @@
+//************* UTILITIES **************/
 /**
  * General async function to handle data fetching
  * @param {string} url
@@ -15,9 +16,35 @@ function fetchData(url) {
 }
 
 
-window.addEventListener('load', () => {getData();});
+// Rounding function https://gist.github.com/djD-REK/2e347f5532bb22310daf450f03ec6ad8 
+function roundOne(n, d) {
+  Math.round(n * Math.pow(10, d)) / Math.pow(10, d)
+}
 
 
+//************* ACTION **************/
+window.addEventListener('load', () => getData() );
+
+
+window.addEventListener('change', e => {
+
+  if (e.target.closest('[data-control]')) {
+    let dataset = e.target.dataset.control;
+    let value = e.target.valueAsNumber;
+
+    /** SESSION STORAGE - set new value */
+    console.log(dataset, value);
+    sessionStorage.setItem(dataset, value);
+    getData();
+  }
+});
+
+
+//************* MAIN **************/
+/**
+ * Called on load and update - gets data from server
+ * @returns {void}
+ */
 async function getData(){
   console.log(`getData........`);
   const SECTIONS = `https://bovisync.bitbucket.io/sample_data/page_meta.json`;
@@ -48,20 +75,6 @@ async function getData(){
 }
 
 
-window.addEventListener('change', e => {
-
-  if (e.target.closest('[data-control]')) {
-    let dataset = e.target.dataset.control;
-    let value = e.target.valueAsNumber;
-
-    /** SESSION STORAGE - set new value */
-    console.log(dataset, value);
-    sessionStorage.setItem(dataset, value);
-    getData();
-  }
-});
-
-
 /**
  * Update DOM
  * @param {{label:string, items: string[]}} sectionsData 
@@ -69,8 +82,6 @@ window.addEventListener('change', e => {
  * @returns {void}
  */
 function updateSections(sectionsData, itemsData, animalData) {
-  // console.log(sectionsData);
-  // console.log(itemsData);
 
   /**
    * CONTROLS - Filter for just numberic 
@@ -116,8 +127,8 @@ function updateSections(sectionsData, itemsData, animalData) {
 
       return match;
     });
-
     // console.log(itemMeta);
+    
     // page meta may contain up to 10 sections of data
     if (index <= 9) {
 
@@ -135,6 +146,7 @@ function updateSections(sectionsData, itemsData, animalData) {
 }
 
 
+//************* DOM METHODS **************/
 /**
  * DOM CONTROLS - 
  */
@@ -170,6 +182,9 @@ function makeControls(numericControls) {
 }
 
 
+/**
+ * Called from makeControls - creates subcomponent
+ */
 function makeDecimalControl(control, storage){
   /**@type {number} */
   let precision = sessionStorage.getItem(`precision-${control.shortName}`);
@@ -183,14 +198,12 @@ function makeDecimalControl(control, storage){
     <span style="min-width: 100px; margin-left: .5em">Precision</span>
     <input class="input" type="number" data-control="precision-${control.shortName}" value="${precision}">
   </div>
-
   `;
 }
 
 
 /**
- * DOM SECTIONS - Panels 
- * @param {*} param0 
+ * DOM SECTIONS - Creates Panels 
  */
 function makePanel({ items, label, animal }) {
 
@@ -203,7 +216,6 @@ function makePanel({ items, label, animal }) {
     ${items.map((item, index) => {
       // must exist and up to 10 report items within each section.
       if (item && index <= 9 ){
-        // console.log(animal[item.shortName]);
 
         /**@type {number} */
         let storage = sessionStorage.getItem(item.shortName);
@@ -214,8 +226,7 @@ function makePanel({ items, label, animal }) {
 
         /**@type {number} */
         let precision = item.dataType === 'Decimal' ? sessionStorage.getItem(`precision-${item.shortName}`) : false;
-
-        console.log(`precision in panel: ${precision}`);
+        // console.log(`precision in panel: ${precision}`);
 
         // if there is a value, not false, round it to precision.
         let numericValue = precision ? roundOne(animal[item.shortName], precision) : animal[item.shortName];
@@ -239,9 +250,3 @@ function makePanel({ items, label, animal }) {
   </nav>
   `;
 }
-
-
-/**
- * Rounding function https://gist.github.com/djD-REK/2e347f5532bb22310daf450f03ec6ad8 
- */
-const roundOne = (n, d) => Math.round(n * Math.pow(10, d)) / Math.pow(10, d)

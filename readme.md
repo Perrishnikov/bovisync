@@ -43,6 +43,6 @@ The application should be flexible enough to support arbitrary items defined in 
 
 [x] Numeric items should support conditional formatting based on a single user-defined threshold defined per item. Item values above the threshold value should stand out to the user in some way. The threshold can be set through a UI element or defined in a new JSON file or documented code reference.
 
-Decimal display values should round to a user-defined number of decimal places per item, without losing the underlying precision (so for example we could perform a calculation with the value at full precision). Like the threshold, the number of places to display can be defined either in the UI or code. 
+[x] Decimal display values should round to a user-defined number of decimal places per item, without losing the underlying precision (so for example we could perform a calculation with the value at full precision). Like the threshold, the number of places to display can be defined either in the UI or code. 
 
-[] Gracefully handle items requested in the page meta which are not present in the item meta or animal data. Provide the user with useful feedback and avoid interfering with display of other data.
+[x] Gracefully handle items requested in the page meta which are not present in the item meta or animal data. Provide the user with useful feedback and avoid interfering with display of other data.
