@@ -18,7 +18,7 @@ function fetchData(url) {
 
 // Rounding function https://gist.github.com/djD-REK/2e347f5532bb22310daf450f03ec6ad8 
 function roundOne(n, d) {
-  Math.round(n * Math.pow(10, d)) / Math.pow(10, d)
+  return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
 }
 
 
@@ -33,9 +33,11 @@ window.addEventListener('change', e => {
     let value = e.target.valueAsNumber;
 
     /** SESSION STORAGE - set new value */
-    console.log(dataset, value);
-    sessionStorage.setItem(dataset, value);
-    getData();
+    // console.log(dataset, value);
+    if(value){
+      sessionStorage.setItem(dataset, value);
+      getData();
+    }
   }
 });
 
@@ -46,7 +48,6 @@ window.addEventListener('change', e => {
  * @returns {void}
  */
 async function getData(){
-  console.log(`getData........`);
   const SECTIONS = `https://bovisync.bitbucket.io/sample_data/page_meta.json`;
   const ITEMS = `https://bovisync.bitbucket.io/sample_data/item_meta.json`;
   const ANIMAL = `https://bovisync.bitbucket.io/sample_data/animal_data.json`;
@@ -128,7 +129,7 @@ function updateSections(sectionsData, itemsData, animalData) {
       return match;
     });
     // console.log(itemMeta);
-    
+
     // page meta may contain up to 10 sections of data
     if (index <= 9) {
 
@@ -158,7 +159,7 @@ function makeControls(numericControls) {
     <div class="control">
 
     ${numericControls.map(control => {
-      console.log(`control`, control);
+      // console.log(`control`, control);
       /**@type {number} */
       let storage = sessionStorage.getItem(control.shortName);
 
@@ -230,6 +231,7 @@ function makePanel({ items, label, animal }) {
 
         // if there is a value, not false, round it to precision.
         let numericValue = precision ? roundOne(animal[item.shortName], precision) : animal[item.shortName];
+        // console.log(`numericValue`, numericValue);
 
         return`
         <div class="panel-block ${exceedStyle ? ` has-text-info has-text-weight-bold` : ``}" style="justify-content: space-between;">
